@@ -1,32 +1,44 @@
-
-; filter-lines
+; filter-lines.el
 ; filter lines interactively
+;
+;;; Description
+;
+; Turn on mode, start typing and incrementally hide lines not
+; containing the string.
+; A buffer-local minor mode.
+;
+; See also: 
+; keep-lines, flush-lines - emacs fns which delete lines from a buffer
+; hide-lines.el - hides lines matching or not matching a regexp
+;   this mode is an interactive version. 
+;
+; Author: Brian Burns <bburns.km@gmail.com>
+; Site: https://github.com/bburns/filter-lines
+; License: GNU - see end of file
+; Date: 2014-01
 
-;;; description
-;
-; buffer-local minor mode
-;
-; author: brian burns <brianburns@utexas.edu>
-; url: github...
-; history:
-; 2014-01 started
-;
-; see also
-; keep-lines, flush-lines
-; hide-lines.el
-;
-; license: gnu. see end of file
 
-
-;;; notes
 
 ; can insert lines in filter mode
 ; but m-g will carry invisible lines surrounding it also
 ; because of the way it's written - which is why it works with org subtrees also
 
 
+;;; Keybindings
 
-;;; private
+;.. m-f m-l
+(global-set-key (kbd "M-4 f") 'filter-lines-mode)
+
+
+(defvar filter-lines/keymap (make-sparse-keymap) "Filter-lines mode keybindings")
+; (suppress-keymap modern-modal/keymap) ; turn off all printing characters, eg 'p'
+
+; m-q shadowed by modern mode. but m-4 isn't
+; (define-key filter-lines/keymap "C-M-q" (lambda () (interactive) (filter-lines-mode 0)))
+
+
+
+;;; Private functions
 
 (defun flag-text (start end) 
   (overlay-put (make-overlay start end) 'invisible 'filter-lines))
@@ -76,15 +88,7 @@
 ; (defun mark-visible () (remove-overlays (point-min) (point-max) 'invisible 'filter-lines))
 
 
-;;; keymap
-
-(defvar filter-lines/keymap (make-sparse-keymap) "Filter-lines mode keybindings")
-; (suppress-keymap modern-modal/keymap) ; turn off all printing characters, eg 'p'
-
-; m-q shadowed by modern mode. but m-4 isn't
-; (define-key filter-lines/keymap "C-M-q" (lambda () (interactive) (filter-lines-mode 0)))
-
-;;; mode
+;;; Mode
 
 (define-minor-mode filter-lines-mode
   "A minor mode to selectively hide lines matching a regexp."
@@ -125,16 +129,9 @@
 ; (filter-lines-mode 0)
 
 
-;.. m-f m-l
-(global-set-key (kbd "M-4 f") 'filter-lines-mode)
 
+;;; Test
 
-;;; afterword
-
-(provide 'filter-lines)
-
-
-;;; hide-lines package
 ; (require 'hide-lines)
 ;. nowork interactively. fix. 
 ; (hide-lines "filter")
@@ -145,7 +142,13 @@
 ;. nowork
 ; (global-set-key (kbd "C-c /") 'hide-lines)
 
-;;; license
+
+;;; Provide
+
+(provide 'filter-lines)
+
+
+;;; License
 ;
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
@@ -161,3 +164,5 @@
 ; along with this program; see the file COPYING.  If not, write to the
 ; Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ; Floor, Boston, MA 02110-1301, USA.
+
+; eof
